@@ -41,18 +41,19 @@ public class RateLimiter {
      * If 1 permit is available, claim it.
      * Else, wait.
      */
-    public void acquire() {
+    public synchronized void acquire() {
         //count is greater than permits given or
-        if (isLocked()) {
+
+        if (!semaphore.tryAcquire()) {
             try {
-                this.wait();
+                Thread.sleep(1000);
+                if(semaphore.availablePermits() == 0)
+                    semaphore.release(PERMITS_PER_SECOND - semaphore.drainPermits());
+                semaphore.acquire();
             } catch (Exception e) {
 
             }
         }
-
-        setCount(1);
-//        System.out.println("Acquire count " + getCount());
     }
 
     /**
