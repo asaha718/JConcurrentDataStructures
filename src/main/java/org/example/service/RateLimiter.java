@@ -6,9 +6,9 @@ import java.util.concurrent.Semaphore;
 
 public class RateLimiter {
     private final int PERMITS_PER_SECOND;
-    private int count = 0;
+    private int count = 1;
 
-    private Instant startTime= Instant.now();
+    private Instant startTime = Instant.now();
 
     public static RateLimiter create(int permitsPerSecond) {
         return new RateLimiter(permitsPerSecond);
@@ -32,25 +32,29 @@ public class RateLimiter {
      */
     public void acquire() {
         //count is greater than permits given or
-        while (getCount() > PERMITS_PER_SECOND || Duration.between(startTime, Instant.now()).toSeconds() < 1) {
+        while (permitsAreLocked()) {
         }
 
         setCount(getCount() + 1);
-        System.out.println("Current count " + getCount());
+//        System.out.println("Acquire count " + getCount());
+    }
+    /**
+     * Permits are locked for 1 second after 10 permits have
+     * been give out.
+     *
+     * return TRUE if one second has not passed, ELSE false
+     */
+    private boolean permitsAreLocked() {
+        return Duration.between(startTime, Instant.now()).toSeconds() < 1;
     }
 
-    public void release() {
-        setCount(getCount() - 1);
-
-    }
-
-    public synchronized int getCount(){
+    public synchronized int getCount() {
         return count;
     }
 
-    public synchronized void setCount(int count){
-        this.count = count;
-        if(count == PERMITS_PER_SECOND) {
+    public synchronized void setCount(int count) {
+        this.count = count > 10 ? 1 : count + 1;
+        if (count == PERMITS_PER_SECOND) {
             startTime = Instant.now();
         }
     }

@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="10880424-2029-447c-a7dd-2cd3a0f76b59" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/ExampleForLombok.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/RateLimiter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/RateLimiter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/RateLimiterRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/RateLimiterRunner.java" afterDir="false" />
     </list>
@@ -42,7 +41,10 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "last_opened_file_path": "C:/Users/Anug Saha/Documents/Flatiron/Wk6/w6d4/JConcurrentDataStructures",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.27011493",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -119,5 +121,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/JConcurrentDataStructures$Main.ic" NAME="Main Coverage Results" MODIFIED="1659017295984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>org.example.*</FILTER>
+    </SUITE>
   </component>
 </project>
