@@ -7,6 +7,16 @@ import java.util.concurrent.Semaphore;
 public class RateLimiter {
     private final int PERMITS_PER_SECOND;
     private int count = 1;
+    private boolean locked = false;
+
+    private Semaphore semaphore = new Semaphore(10);
+    public synchronized boolean isLocked() {
+        return locked;
+    }
+
+    public synchronized void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 
     private Instant startTime = Instant.now();
 
@@ -32,7 +42,7 @@ public class RateLimiter {
      */
     public void acquire() {
         //count is greater than permits given or
-        while (permitsAreLocked()) {
+        while (isLocked()) {
         }
 
         setCount(getCount() + 1);
@@ -53,9 +63,8 @@ public class RateLimiter {
     }
 
     public synchronized void setCount(int count) {
-        this.count = count > 10 ? 1 : count + 1;
-        if (count == PERMITS_PER_SECOND) {
-            startTime = Instant.now();
+        if(!semaphore.tryAcquire()) {
+            setLocked(true);
         }
     }
 }
