@@ -43,7 +43,12 @@ public class RateLimiter {
      */
     public void acquire() {
         //count is greater than permits given or
-        while (isLocked()) {
+        if (isLocked()) {
+            try {
+                this.wait();
+            } catch (Exception e) {
+
+            }
         }
 
         setCount(1);
@@ -70,6 +75,7 @@ public class RateLimiter {
             try {
                 Thread.sleep(1000);
                 semaphore.release(PERMITS_PER_SECOND);
+                this.notifyAll();
             } catch (Exception e) {
 
             } finally {
