@@ -53,7 +53,7 @@ public class RateLimiter {
     }
 
     public synchronized void setCount(int count) {
-        this.count = count > 10 ? 1 : count + 1;
+        this.count = count > 10 ? 1 : count +1;
         if (count == PERMITS_PER_SECOND) {
             startTime = Instant.now();
         }
