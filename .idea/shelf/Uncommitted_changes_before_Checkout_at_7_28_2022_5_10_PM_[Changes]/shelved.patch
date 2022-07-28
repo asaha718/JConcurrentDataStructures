@@ -1,0 +1,21 @@
+Index: src/main/java/org/example/service/RateLimiter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example.service;\r\n\r\nimport java.time.Duration;\r\nimport java.time.Instant;\r\nimport java.util.concurrent.Semaphore;\r\n\r\npublic class RateLimiter {\r\n    private final int PERMITS_PER_SECOND;\r\n    private int count = 1;\r\n    private boolean locked = false;\r\n\r\n    private Semaphore semaphore = new Semaphore(10);\r\n\r\n    public synchronized boolean isLocked() {\r\n        return locked;\r\n    }\r\n\r\n    public synchronized void setLocked(boolean locked) {\r\n        this.locked = locked;\r\n    }\r\n\r\n    private Instant startTime = Instant.now();\r\n\r\n    public static RateLimiter create(int permitsPerSecond) {\r\n        return new RateLimiter(permitsPerSecond);\r\n    }\r\n\r\n    private RateLimiter(int permitsPerSecond) {\r\n        PERMITS_PER_SECOND = permitsPerSecond;\r\n    }\r\n\r\n    /**\r\n     * If 'count' number of permits are available, claim them.\r\n     * Else, wait.\r\n     */\r\n    public void acquire(int count) {\r\n        // TODO\r\n    }\r\n\r\n    /**\r\n     * If 1 permit is available, claim it.\r\n     * Else, wait.\r\n     */\r\n    public synchronized void acquire() {\r\n        //count is greater than permits given or\r\n\r\n        if (!semaphore.tryAcquire()) {\r\n            try {\r\n                Thread.sleep(1000);\r\n                if(semaphore.availablePermits() == 0)\r\n                    semaphore.release(PERMITS_PER_SECOND - semaphore.drainPermits());\r\n                semaphore.acquire();\r\n            } catch (Exception e) {\r\n\r\n            }\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Permits are locked for 1 second after 10 permits have\r\n     * been give out.\r\n     * <p>\r\n     * return TRUE if one second has not passed, ELSE false\r\n     */\r\n    private boolean permitsAreLocked() {\r\n        return Duration.between(startTime, Instant.now()).toSeconds() < 1;\r\n    }\r\n\r\n    public synchronized int getCount() {\r\n        return count;\r\n    }\r\n\r\n    public synchronized void setCount(int count) {\r\n        if (!semaphore.tryAcquire()) {\r\n            setLocked(true);\r\n            try {\r\n                Thread.sleep(1000);\r\n                semaphore.release(PERMITS_PER_SECOND);\r\n                this.notifyAll();\r\n            } catch (Exception e) {\r\n\r\n            } finally {\r\n                setLocked(false);\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/org/example/service/RateLimiter.java b/src/main/java/org/example/service/RateLimiter.java
+--- a/src/main/java/org/example/service/RateLimiter.java	
++++ b/src/main/java/org/example/service/RateLimiter.java	
+@@ -47,8 +47,8 @@
+         if (!semaphore.tryAcquire()) {
+             try {
+                 Thread.sleep(1000);
+-                if(semaphore.availablePermits() == 0)
+-                    semaphore.release(PERMITS_PER_SECOND - semaphore.drainPermits());
++                //if(semaphore.availablePermits() == 0)
++                semaphore.release(PERMITS_PER_SECOND - semaphore.drainPermits());
+                 semaphore.acquire();
+             } catch (Exception e) {
+ 

@@ -47,8 +47,7 @@ public class RateLimiter {
         if (!semaphore.tryAcquire()) {
             try {
                 Thread.sleep(1000);
-                if(semaphore.availablePermits() == 0)
-                    semaphore.release(PERMITS_PER_SECOND - semaphore.drainPermits());
+                semaphore.release(PERMITS_PER_SECOND - semaphore.drainPermits());
                 semaphore.acquire();
             } catch (Exception e) {
 
