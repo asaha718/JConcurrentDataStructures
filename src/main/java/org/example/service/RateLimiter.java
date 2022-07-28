@@ -48,11 +48,11 @@ public class RateLimiter {
         return Duration.between(startTime, Instant.now()).toSeconds() < 1;
     }
 
-    public synchronized int getCount() {
+    private synchronized int getCount() {
         return count;
     }
 
-    public synchronized void setCount(int count) {
+    private synchronized void setCount(int count) {
         this.count = count > 10 ? 1 : count +1;
         if (count == PERMITS_PER_SECOND) {
             startTime = Instant.now();
