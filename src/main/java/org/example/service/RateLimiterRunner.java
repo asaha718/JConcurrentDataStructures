@@ -67,6 +67,7 @@ public class RateLimiterRunner {
     private static void examineNumber(String num) {
         RATE_LIMITER.acquire();
         System.out.println(LocalTime.now().truncatedTo(ChronoUnit.SECONDS) + ": " + num);
+        RATE_LIMITER.release();
     }
 
 
