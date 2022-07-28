@@ -10,6 +10,7 @@ public class RateLimiter {
     private boolean locked = false;
 
     private Semaphore semaphore = new Semaphore(10);
+
     public synchronized boolean isLocked() {
         return locked;
     }
@@ -45,13 +46,14 @@ public class RateLimiter {
         while (isLocked()) {
         }
 
-        setCount(getCount() + 1);
+        setCount(1);
 //        System.out.println("Acquire count " + getCount());
     }
+
     /**
      * Permits are locked for 1 second after 10 permits have
      * been give out.
-     *
+     * <p>
      * return TRUE if one second has not passed, ELSE false
      */
     private boolean permitsAreLocked() {
@@ -63,8 +65,16 @@ public class RateLimiter {
     }
 
     public synchronized void setCount(int count) {
-        if(!semaphore.tryAcquire()) {
+        if (!semaphore.tryAcquire()) {
             setLocked(true);
+            try {
+                Thread.sleep(1000);
+                semaphore.release(PERMITS_PER_SECOND);
+            } catch (Exception e) {
+
+            } finally {
+                setLocked(false);
+            }
         }
     }
 }
