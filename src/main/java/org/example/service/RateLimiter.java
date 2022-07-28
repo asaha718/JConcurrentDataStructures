@@ -2,24 +2,15 @@ package org.example.service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
 public class RateLimiter {
     private final int PERMITS_PER_SECOND;
-    private int count = 1;
-    private boolean locked = false;
+    private Semaphore semaphore;
+    Timer t;
 
-    private Semaphore semaphore = new Semaphore(10);
-
-    public synchronized boolean isLocked() {
-        return locked;
-    }
-
-    public synchronized void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
-    private Instant startTime = Instant.now();
 
     public static RateLimiter create(int permitsPerSecond) {
         return new RateLimiter(permitsPerSecond);
@@ -27,32 +18,32 @@ public class RateLimiter {
 
     private RateLimiter(int permitsPerSecond) {
         PERMITS_PER_SECOND = permitsPerSecond;
+        semaphore = new Semaphore(PERMITS_PER_SECOND);
+        t = new Timer();
     }
+
 
     /**
      * If 'count' number of permits are available, claim them.
      * Else, wait.
      */
-    public void acquire(int count) {
-        // TODO
+    public void acquire(int count) throws InterruptedException {
+        semaphore.acquire(count);
+
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                semaphore.release(count);
+            }
+        }, 1000);
     }
 
     /**
      * If 1 permit is available, claim it.
      * Else, wait.
      */
-    public void acquire() {
-        //count is greater than permits given or
-        if (isLocked()) {
-            try {
-                this.wait();
-            } catch (Exception e) {
-
-            }
-        }
-
-        setCount(1);
-//        System.out.println("Acquire count " + getCount());
+    public void acquire() throws InterruptedException {
+        this.acquire(1);
     }
 
     /**
@@ -61,26 +52,4 @@ public class RateLimiter {
      * <p>
      * return TRUE if one second has not passed, ELSE false
      */
-    private boolean permitsAreLocked() {
-        return Duration.between(startTime, Instant.now()).toSeconds() < 1;
-    }
-
-    public synchronized int getCount() {
-        return count;
-    }
-
-    public synchronized void setCount(int count) {
-        if (!semaphore.tryAcquire()) {
-            setLocked(true);
-            try {
-                Thread.sleep(1000);
-                semaphore.release(PERMITS_PER_SECOND);
-                this.notifyAll();
-            } catch (Exception e) {
-
-            } finally {
-                setLocked(false);
-            }
-        }
-    }
 }
